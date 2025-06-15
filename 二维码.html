@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇航快递 - 随机快递单号生成器</title>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0c1445 0%, #1a237e 100%);
+            color: #e0f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(13, 19, 33, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(64, 196, 255, 0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo span {
+            font-size: 42px;
+            margin: 0 10px;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #4fc3f7, #29b6f6, #039be5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(79, 195, 247, 0.4);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #81d4fa;
+            margin-bottom: 5px;
+        }
+        
+        .qr-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin: 20px;
+        }
+        
+        #qrcode {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .info-box {
+            flex: 1;
+            min-width: 300px;
+            margin: 20px;
+            background: rgba(2, 48, 71, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #039be5;
+        }
+        
+        .tracking-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 2px;
+            color: #4fc3f7;
+            margin: 10px 0 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .prefix {
+            color: #ffd54f;
+            font-weight: bold;
+        }
+        
+        h2 {
+            color: #29b6f6;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(41, 182, 246, 0.3);
+        }
+        
+        .instructions ul {
+            padding-left: 25px;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .instructions li:before {
+            content: "🚀";
+            position: absolute;
+            left: -25px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            background: rgba(41, 98, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .feature:hover {
+            background: rgba(41, 182, 246, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #4fc3f7;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #0288d1, #039be5);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(2, 119, 189, 0.4);
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #039be5, #0288d1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(2, 119, 189, 0.6);
+        }
+        
+        .astronaut {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            animation: astronaut-float 8s infinite ease-in-out;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #81d4fa;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes astronaut-float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-5px, -10px) rotate(-5deg); }
+            50% { transform: translate(5px, -15px) rotate(5deg); }
+            75% { transform: translate(-5px, -10px) rotate(-5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(3, 155, 229, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(3, 155, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(3, 155, 229, 0); }
+        }
+        
+        @media (max-width: 600px) {
+            .qr-section {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .astronaut {
+                position: static;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="astronaut">👨‍🚀</div>
+        <header>
+            <div class="logo">
+                <span>🚀</span>
+                <span>🛸</span>
+                <span>🛰️</span>
+            </div>
+            <h1>宇航快递单号二维码生成器</h1>
+            <p class="subtitle">扫码获取随机快递单号 | 享受星际物流体验</p>
+        </header>
+        
+        <section class="qr-section">
+            <div class="qr-container pulse">
+                <div id="qrcode"></div>
+                <p style="margin-top: 15px; color: #333; font-weight: bold;">请使用手机扫描二维码</p>
+            </div>
+            
+            <div class="info-box">
+                <h2>您的宇航快递单号</h2>
+                <div id="trackingNumber" class="tracking-number">生成中...</div>
+                <p>扫码后即可获取此单号，可用于查询您的包裹在星际轨道中的实时位置</p>
+            </div>
+        </section>
+        
+        <section class="instructions">
+            <h2>使用说明</h2>
+            <ul>
+                <li>使用手机扫描左侧二维码，获取您的随机宇航快递单号</li>
+                <li>每个二维码对应唯一的快递单号，单次有效</li>
+                <li>宇航快递单号格式：<span class="prefix">YH</span>开头 + 12位随机编码</li>
+                <li>此单号可模拟查询包裹在星际物流网络中的位置</li>
+                <li>重新生成按钮可获取新的快递单号</li>
+            </ul>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <h3>星际物流网络</h3>
+                <p>覆盖地球至火星，月球空间站，星际运输网络</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>极速送达</h3>
+                <p>近地轨道包裹最快1小时送达</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔭</div>
+                <h3>实时追踪</h3>
+                <p>通过深空网络实时追踪包裹位置</p>
+            </div>
+        </section>
+        
+        <div class="buttons">
+            <button id="generateBtn">重新生成单号</button>
+            <button id="downloadBtn">下载二维码</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>宇航快递 - 致力于未来物流的创新 | 本服务仅用于演示用途</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrcodeElement = document.getElementById('qrcode');
+            const trackingNumberElement = document.getElementById('trackingNumber');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            let currentTrackingNumber = '';
+            
+            // 生成宇航快递单号（以YH开头）
+            function generateTrackingNumber() {
+                const prefix = "YH";
+                const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 避免容易混淆的字符
+                let result = prefix;
+                
+                for (let i = 0; i < 12; i++) {
+                    if (i > 0 && i % 4 === 0) result += '-';
+                    result += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                
+                return result;
+            }
+            
+            // 更新二维码和显示
+            function updateQRCode() {
+                currentTrackingNumber = generateTrackingNumber();
+                trackingNumberElement.textContent = currentTrackingNumber;
+                
+                // 清除旧二维码
+                qrcodeElement.innerHTML = '';
+                
+                // 生成新二维码
+                new QRCode(qrcodeElement, {
+                    text: currentTrackingNumber,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                
+                // 添加脉冲动画
+                document.querySelector('.qr-container').classList.remove('pulse');
+                setTimeout(() => {
+                    document.querySelector('.qr-container').classList.add('pulse');
+                }, 10);
+            }
+            
+            // 下载二维码
+            function downloadQRCode() {
+                if (!currentTrackingNumber) return;
+                
+                const canvas = qrcodeElement.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `宇航快递单号_${currentTrackingNumber}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            }
+            
+            // 绑定按钮事件
+            generateBtn.addEventListener('click', updateQRCode);
+            downloadBtn.addEventListener('click', downloadQRCode);
+            
+            // 初始化
+            updateQRCode();
+        });
+    </script>
+</body>
+</html>
